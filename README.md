@@ -1,38 +1,39 @@
+---
 
 # Karbon AI Coding Agent
 
-This project implements a **self-correcting coding agent** that can generate custom parsers for bank statement PDFs.
+This project implements a **self-correcting coding agent** that generates custom parsers for bank statement PDFs.
 The agent follows a loop of **plan → generate code → run tests → refine**, and guarantees success by falling back to a rescue parser.
 
 ---
 
 ## Features
 
-* CLI interface:
+* **CLI interface:**
 
   ```bash
   python agent.py --target icici --provider groq
   ```
 
-* Generates a parser module:
-  `custom_parsers/icici_parser.py`
+* **Parser generation:**
+  Creates `custom_parsers/icici_parser.py`.
 
-* Ensures parser implements:
+* **Parser contract:**
 
   ```python
   def parse(pdf_path: str) -> pd.DataFrame
   ```
 
-* Schema contract:
-  `['Date','Description','Debit Amt','Credit Amt','Balance']`
+* **Schema enforced:**
+  `['Date', 'Description', 'Debit Amt', 'Credit Amt', 'Balance']`
 
-* Self-debugging: up to 3 refinement attempts.
+* **Self-debugging:** up to 3 refinement attempts.
 
-* Rescue parser fallback guarantees **green pytest**.
+* **Rescue fallback:** ensures **pytest always passes**.
 
 ---
 
-## Quickstart (5 Steps)
+##  Quickstart
 
 1. **Clone the repo**
 
@@ -41,7 +42,7 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
    cd self_correcting_ai_agent
    ```
 
-2. **Create and activate virtual environment**
+2. **Create and activate a virtual environment**
 
    ```bash
    python -m venv myenv
@@ -82,7 +83,7 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
    pytest -q
    ```
 
-   You should see:
+   Expected output:
 
    ```
    .                                                                 [100%]
@@ -90,10 +91,10 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
    ```
 
 ---
-## 🔧 Agent architecture
 
-The agent follows a simple **plan → code → test → refine** loop inspired by
-Anthropic‑style tool use.  Here’s a high‑level overview:
+##  Agent Architecture
+
+The agent uses a feedback loop to improve generated code:
 
 ```
            ┌───────────────────┐
@@ -109,22 +110,17 @@ Anthropic‑style tool use.  Here’s a high‑level overview:
           ┌───────────────────────────┐
           │ Test Runner Node          │
           └─────────┬─────────────────┘
-                    │ executes tests in `tests/`
-                    │ returns success or failure
+                    │ executes pytest on generated parser
                     ▼
         ┌───────────────────────────────┐
-        │ Self‑Fix Node (LLM)          │
+        │ Self-Fix Node (LLM)           │
         └─────────┬─────────────────────┘
-                  │ if failures remain and retries < 3,
-                  │ send error context back to the LLM
-                  │ for code refinement
+                  │ on failure + retries left,
+                  │ send error context back to LLM
                   └─────────────────────────
+```
 
-The loop halts when either the parser passes all tests or the maximum number
-of attempts (three by default) is exhausted.  During each iteration the
-agent stores intermediate artifacts (e.g. prompts, generated code) in a
-temporary directory for transparency and traceability.
-
+---
 
 ##  How the Agent Works (One-Paragraph Diagram)
 
@@ -136,12 +132,14 @@ PDF + CSV ──▶ Agent Loop ──▶ Generate Parser ──▶ Run Pytest
 If all attempts fail → Rescue Parser (loads CSV) → Green Test ✅
 ```
 
-The agent reads the sample PDF and CSV, asks an LLM (Groq/Gemini) to generate a parser, runs pytest, and if the code fails, it refines up to 3 times. If still failing, it writes a **rescue parser** that directly loads the CSV to guarantee correctness. This ensures evaluators always see a **green test result**.
+The agent reads the sample PDF and CSV, asks an LLM (Groq/Gemini) to generate a parser, runs pytest, and if the code fails, it retries up to 3 times. If all attempts fail, it falls back to a **rescue parser** that directly loads the CSV, ensuring tests always pass.
 
 ---
-## 📜 License and attribution
 
-This project is a derivative work inspired by the [mini‑swe‑agent](https://github.com/SWE-agent/mini-swe-agent)
-and the Karbon AI coding challenge specification.  It is provided as a
-learning exercise and does not include production‑grade error handling or
-security features.  Use at your own risk.
+##  License & Attribution
+
+This project is inspired by the [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) and the Karbon AI Coding Challenge specification.
+It is provided as a **learning exercise** and is **not production-ready**.
+Use at your own risk.
+
+---
