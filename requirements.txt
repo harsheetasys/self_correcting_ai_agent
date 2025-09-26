@@ -1,0 +1,22 @@
+# Required Python packages for the Karbon AI coding challenge
+#
+# To install these dependencies run:
+#   pip install -r requirements.txt
+#
+# The list below deliberately includes only well‑known libraries.  During
+# development you may wish to freeze exact versions with `pip freeze > requirements.txt`.
+
+# Core libraries
+pandas
+pdfplumber
+pytest
+python-dotenv
+
+# LLM providers
+google-generativeai
+groq
+
+# Optional agent scaffolding
+langchain
+langchain-community
+langgraph
