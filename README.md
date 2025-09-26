@@ -37,7 +37,7 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
 1. **Clone the repo**
 
    ```bash
-   git clone https://github.com/<your-username>/ai-agent-challenge.git
+   git clone https://github.com/harsheetasys/self_correcting_ai_agent.git
    cd ai-agent-challenge
    ```
 
