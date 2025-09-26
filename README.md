@@ -90,6 +90,41 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
    ```
 
 ---
+## 🔧 Agent architecture
+
+The agent follows a simple **plan → code → test → refine** loop inspired by
+Anthropic‑style tool use.  Here’s a high‑level overview:
+
+```
+           ┌───────────────────┐
+           │  Planner (LLM)    │
+           └─────────┬─────────┘
+                     │ prompt: “Write a parser for bank X…”
+                     ▼
+          ┌───────────────────────┐
+          │ Code Generator Node   │
+          └─────────┬─────────────┘
+                    │ writes `custom_parsers/<bank>_parser.py`
+                    ▼
+          ┌───────────────────────────┐
+          │ Test Runner Node          │
+          └─────────┬─────────────────┘
+                    │ executes tests in `tests/`
+                    │ returns success or failure
+                    ▼
+        ┌───────────────────────────────┐
+        │ Self‑Fix Node (LLM)          │
+        └─────────┬─────────────────────┘
+                  │ if failures remain and retries < 3,
+                  │ send error context back to the LLM
+                  │ for code refinement
+                  └─────────────────────────
+
+The loop halts when either the parser passes all tests or the maximum number
+of attempts (three by default) is exhausted.  During each iteration the
+agent stores intermediate artifacts (e.g. prompts, generated code) in a
+temporary directory for transparency and traceability.
+
 
 ##  How the Agent Works (One-Paragraph Diagram)
 
@@ -104,3 +139,9 @@ If all attempts fail → Rescue Parser (loads CSV) → Green Test ✅
 The agent reads the sample PDF and CSV, asks an LLM (Groq/Gemini) to generate a parser, runs pytest, and if the code fails, it refines up to 3 times. If still failing, it writes a **rescue parser** that directly loads the CSV to guarantee correctness. This ensures evaluators always see a **green test result**.
 
 ---
+## 📜 License and attribution
+
+This project is a derivative work inspired by the [mini‑swe‑agent](https://github.com/SWE-agent/mini-swe-agent)
+and the Karbon AI coding challenge specification.  It is provided as a
+learning exercise and does not include production‑grade error handling or
+security features.  Use at your own risk.
