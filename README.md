@@ -60,11 +60,9 @@ The agent follows a loop of **plan → generate code → run tests → refine**,
    Create a `.env` file in the project root with:
 
    ```ini
-   GEMINI_API_KEY=your_google_ai_studio_key_here
    GROQ_API_KEY=your_groq_console_key_here
    ```
 
-   * Get Gemini key → [Google AI Studio](https://aistudio.google.com/app/apikey)
    * Get Groq key → [Groq Console](https://console.groq.com/keys)
 
 5. **Run the agent**
