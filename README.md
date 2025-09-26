@@ -104,7 +104,3 @@ If all attempts fail → Rescue Parser (loads CSV) → Green Test ✅
 The agent reads the sample PDF and CSV, asks an LLM (Groq/Gemini) to generate a parser, runs pytest, and if the code fails, it refines up to 3 times. If still failing, it writes a **rescue parser** that directly loads the CSV to guarantee correctness. This ensures evaluators always see a **green test result**.
 
 ---
-
-
-
-Do you want me to **generate the `agent_workflow.png` diagram automatically** (with arrows and icons) so you can drop it into a `/docs` folder and link it in README?
